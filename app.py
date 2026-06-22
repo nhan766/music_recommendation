@@ -63,7 +63,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1. TẢI VÀ TIỀN XỬ LÝ DỮ LIỆU
+# 1. TẢI VÀ XỬ LÝ DỮ LIỆU
 @st.cache_data
 def load_data():
     try:
@@ -106,15 +106,12 @@ def recommend_songs(song_title, df, top_n=4):
 st.markdown("<h1 style='text-align: center; color: #ffffff; margin-bottom: 5px;'>🎵 Smart Music Discovery</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 30px;'>Hệ thống gợi ý bài hát thông minh dựa trên thuật toán Content-based Filtering</p>", unsafe_allow_html=True)
 
-# Bố cục chia hai cột chính: Cột bên trái để chọn bài hát, cột bên phải hiển thị kết quả
-# Bố cục chia hai cột chính: Cột bên trái để chọn bài hát, cột bên phải hiển thị kết quả
 col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
 
 with col_input:
     st.markdown("<h3 style='color: #ffffff;'>🎧 Trình điều khiển</h3>", unsafe_allow_html=True)
     song_list = df['track_name'].tolist()
     
-    # NÂNG CẤP: Biến Selectbox thành thanh tìm kiếm (Search Bar)
     selected_song = st.selectbox(
         "🔍 Nhập tên bài hát để tìm kiếm:", 
         options=song_list,
