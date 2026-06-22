@@ -138,7 +138,7 @@ with col_input:
 
 with col_output:
     if search_button and selected_song:
-        st.markdown(f"<h3 style='color: #ffffff;'>✨ Danh sách đề xuất cho: {selected_song}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='color: #ffffff;'>Danh sách đề xuất cho: {selected_song}</h3>", unsafe_allow_html=True)
         
         with st.spinner("Thuật toán đang tính toán khoảng cách vector..."):
             recommendations = recommend_songs(selected_song, df, top_n=4)
@@ -151,9 +151,9 @@ with col_output:
                 with target_col:
                     st.markdown(f"""
                         <div class="music-card">
-                            <div class="music-title">🎵 {row['track_name']}</div>
-                            <div class="music-artist">👤 {row['artists']}</div>
-                            <span class="music-badge">🏷️ {row['track_genre'].upper()}</span>
+                            <div class="music-title"> {row['track_name']}</div>
+                            <div class="music-artist"> {row['artists']}</div>
+                            <span class="music-badge"> {row['track_genre'].upper()}</span>
                             <div style="color: #888; font-size: 11px; margin-top: 12px; display: flex; justify-content: space-between;">
                                 <span>Độ tương đồng</span>
                                 <span style="color: #1db954; font-weight: bold;">{sim_percentage}%</span>
