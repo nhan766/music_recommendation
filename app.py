@@ -104,7 +104,7 @@ def recommend_songs(song_title, df, top_n=4):
 
 # 3. THIẾT KẾ GIAO DIỆN NGƯỜI DÙNG
 st.markdown("<h1 style='text-align: center; color: #ffffff; margin-bottom: 5px;'>🎵 Smart Music Discovery</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 30px;'>Hệ thống gợi ý bài hát thông minh dựa trên thuật toán Content-based Filtering</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 30px;'>Hệ thống gợi ý bài hát dựa trên thuật toán Content-based Filtering</p>", unsafe_allow_html=True)
 
 col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
 
@@ -113,10 +113,10 @@ with col_input:
     song_list = df['track_name'].tolist()
     
     selected_song = st.selectbox(
-        "🔍 Nhập tên bài hát để tìm kiếm:", 
+        "Nhập tên bài hát để tìm kiếm:", 
         options=song_list,
         index=None, # Để trống ban đầu
-        placeholder="Gõ tên bài vào đây (VD: Shape of...)"
+        placeholder="Gõ tên bài vào đây"
     )
     
     st.markdown("<br>", unsafe_allow_html=True)
