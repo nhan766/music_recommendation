@@ -107,41 +107,48 @@ st.markdown("<h1 style='text-align: center; color: #ffffff; margin-bottom: 5px;'
 st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 30px;'>Hệ thống gợi ý bài hát thông minh dựa trên thuật toán Content-based Filtering</p>", unsafe_allow_html=True)
 
 # Bố cục chia hai cột chính: Cột bên trái để chọn bài hát, cột bên phải hiển thị kết quả
+# Bố cục chia hai cột chính: Cột bên trái để chọn bài hát, cột bên phải hiển thị kết quả
 col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
 
 with col_input:
     st.markdown("<h3 style='color: #ffffff;'>🎧 Trình điều khiển</h3>", unsafe_allow_html=True)
     song_list = df['track_name'].tolist()
-    selected_song = st.selectbox("Chọn bài hát bạn yêu thích từ kho dữ liệu:", song_list)
+    
+    # NÂNG CẤP: Biến Selectbox thành thanh tìm kiếm (Search Bar)
+    selected_song = st.selectbox(
+        "🔍 Nhập tên bài hát để tìm kiếm:", 
+        options=song_list,
+        index=None, # Để trống ban đầu
+        placeholder="Gõ tên bài vào đây (VD: Shape of...)"
+    )
     
     st.markdown("<br>", unsafe_allow_html=True)
-    search_button = st.button("Tìm kiếm bài hát tương tự", use_container_width=True)
     
-    # Hiển thị thông tin bài hát đang chọn hiện tại dưới dạng một thẻ đơn giản
-    current_song_info = df[df['track_name'] == selected_song].iloc[0]
-    st.markdown(f"""
-        <div style='background-color: #14171c; padding: 15px; border-radius: 8px; border-left: 4px solid #1db954; margin-top: 30px;'>
-            <div style='color: #b3b3b3; font-size: 12px; text-transform: uppercase;'>Đang chọn làm gốc</div>
-            <div style='color: #ffffff; font-size: 16px; font-weight: bold; margin-top: 5px;'>{current_song_info['track_name']}</div>
-            <div style='color: #888888; font-size: 14px;'>{current_song_info['artists']}</div>
-        </div>
-    """, unsafe_allow_html=True)
+    # Chỉ cho phép bấm nút Tìm kiếm nếu đã chọn/gõ xong bài hát
+    is_disabled = selected_song is None
+    search_button = st.button("Phân tích & Gợi ý", use_container_width=True, disabled=is_disabled)
+    
+    if selected_song:
+        # Hiển thị thông tin bài hát đang chọn hiện tại
+        current_song_info = df[df['track_name'] == selected_song].iloc[0]
+        st.markdown(f"""
+            <div style='background-color: #14171c; padding: 15px; border-radius: 8px; border-left: 4px solid #1db954; margin-top: 30px;'>
+                <div style='color: #b3b3b3; font-size: 12px; text-transform: uppercase;'>Đang chọn làm gốc</div>
+                <div style='color: #ffffff; font-size: 16px; font-weight: bold; margin-top: 5px;'>{current_song_info['track_name']}</div>
+                <div style='color: #888888; font-size: 14px;'>{current_song_info['artists']}</div>
+            </div>
+        """, unsafe_allow_html=True)
 
 with col_output:
-    if search_button:
-        st.markdown(f"<h3 style='color: #ffffff;'>✨ Danh sách đề xuất cho bài hát: {selected_song}</h3>", unsafe_allow_html=True)
+    if search_button and selected_song:
+        st.markdown(f"<h3 style='color: #ffffff;'>✨ Danh sách đề xuất cho: {selected_song}</h3>", unsafe_allow_html=True)
         
         with st.spinner("Thuật toán đang tính toán khoảng cách vector..."):
             recommendations = recommend_songs(selected_song, df, top_n=4)
             
-            # Tạo lưới hiển thị kết quả (2 dòng x 2 cột) để tạo cảm giác giống ứng dụng nghe nhạc thật
             grid_col1, grid_col2 = st.columns(2)
-            
             for index, row in recommendations.iterrows():
-                # Chia đều các thẻ vào các cột lưới
                 target_col = grid_col1 if index % 2 == 0 else grid_col2
-                
-                # Tính phần trăm độ tương đồng để vẽ thanh tiến trình
                 sim_percentage = int(row['similarity_score'] * 100)
                 
                 with target_col:
@@ -160,10 +167,8 @@ with col_output:
                         </div>
                     """, unsafe_allow_html=True)
     else:
-        # Trạng thái mặc định khi người dùng chưa bấm tìm kiếm
+        # Trạng thái mặc định
         st.markdown("<h3 style='color: #ffffff;'>Khám phá kho bài hát</h3>", unsafe_allow_html=True)
-        st.info("Hãy chọn một bài hát ở bảng điều khiển bên trái và nhấn nút tìm kiếm để hệ thống phân tích đặc trưng văn bản TF-IDF.")
-        
-        # Hiển thị ngẫu nhiên một vài bài hát mẫu dạng bảng gọn gàng phía dưới
+        st.info("Hãy gõ tên một bài hát vào ô tìm kiếm bên trái để hệ thống phân tích đặc trưng văn bản TF-IDF.")
         st.markdown("<p style='color: #b3b3b3; font-size: 14px;'>Gợi ý một số bài hát có trong bộ dữ liệu Kaggle:</p>", unsafe_allow_html=True)
         st.dataframe(df.head(6)[['track_name', 'artists', 'track_genre']].rename(columns={'track_name': 'Tên bài', 'artists': 'Nghệ sĩ', 'track_genre': 'Thể loại'}), use_container_width=True)
