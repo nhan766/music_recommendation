@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # CẤU HÌNH TRANG WEB
-st.set_page_config(page_title="Music Recommendation System", page_icon="🎵", layout="wide")
+st.set_page_config(page_title="Music Recommendation System", layout="wide")
 
 st.markdown("""
     <style>
