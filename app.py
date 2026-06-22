@@ -135,41 +135,4 @@ with tab1:
         else:
             st.info("Hệ thống giải quyết bài toán Cold-Start bằng cách kết hợp đặc trưng item và độ phổ biến. Hãy chọn bài hát để trải nghiệm.")
 
-with tab2:
-    st.markdown("<h3 style='color: #ffffff;'>📈 Hybrid Model Lift Across Top-K Metrics</h3>", unsafe_allow_html=True)
-    st.markdown("So sánh hiệu suất giữa phương pháp Gợi ý theo độ phổ biến (Popularity Baseline) và Mô hình Lai (Hybrid Model).", unsafe_allow_html=True)
     
-    # Vẽ biểu đồ bằng matplotlib mô phỏng chính xác số liệu trong Slide 8
-    fig, ax = plt.subplots(figsize=(10, 5))
-    fig.patch.set_facecolor('#0e1117')
-    ax.set_facecolor('#0e1117')
-    
-    labels = ['Precision@10', 'Recall@10', 'NDCG@10']
-    baseline_scores = [0.12, 0.18, 0.21]
-    hybrid_scores = [0.41, 0.56, 0.63]
-    
-    x = np.arange(len(labels))
-    width = 0.35
-    
-    rects1 = ax.bar(x - width/2, baseline_scores, width, label='Popularity Baseline', color='#2b2b2b')
-    rects2 = ax.bar(x + width/2, hybrid_scores, width, label='Hybrid Model (NTHN)', color='#c06a45')
-    
-    ax.set_ylabel('Scores', color='white')
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, color='white')
-    ax.tick_params(axis='y', colors='white')
-    
-    ax.legend(facecolor='#1e222b', labelcolor='white', edgecolor='#2d3139')
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['bottom'].set_color('#555555')
-    ax.spines['left'].set_color('#555555')
-    
-    st.pyplot(fig)
-    
-    st.markdown("""
-    **Kết luận Đánh giá:**
-    - **Data Quality is Everything:** Dữ liệu đã được tiền xử lý loại bỏ nhiễu.
-    - **The Perfect Hybrid Balance:** Mô hình lai cho thấy sự vượt trội ở cả 3 chỉ số đo lường so với Baseline.
-    - **User Experience Matters:** Giao diện trực quan hóa giúp người dùng dễ dàng khám phá bài hát mới.
-    """)
