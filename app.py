@@ -3,10 +3,9 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# CẤU HÌNH TRANG WEB (Phải đặt ở dòng đầu tiên)
+# CẤU HÌNH TRANG WEB
 st.set_page_config(page_title="Music Recommendation System", page_icon="🎵", layout="wide")
 
-# THIẾT KẾ CSS CAO CẤP (Ghi đè giao diện mặc định của Streamlit)
 st.markdown("""
     <style>
     /* Nền và phông chữ tổng thể */
@@ -103,7 +102,7 @@ def recommend_songs(song_title, df, top_n=4):
         results.append(row)
     return pd.DataFrame(results)
 
-# 3. THIẾT KẾ GIAO DIỆN NGƯỜI DÙNG (UI/UX)
+# 3. THIẾT KẾ GIAO DIỆN NGƯỜI DÙNG
 st.markdown("<h1 style='text-align: center; color: #ffffff; margin-bottom: 5px;'>🎵 Smart Music Discovery</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 30px;'>Hệ thống gợi ý bài hát thông minh dựa trên thuật toán Content-based Filtering</p>", unsafe_allow_html=True)
 
