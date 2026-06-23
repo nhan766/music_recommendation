@@ -6,6 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import sqlite3
 import hashlib
 from datetime import datetime
+import pytz  # Thư viện xử lý cấu hình múi giờ quốc tế
 
 # ==========================================
 # 1. CẤU HÌNH TRANG WEB & GIAO DIỆN CSS
@@ -60,7 +61,11 @@ def login_user(username, password):
 def add_search_history(username, song_title):
     conn = init_db()
     c = conn.cursor()
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # ĐỊNH CẤU HÌNH GMT+7: Ép cấu hình thời gian chạy theo múi giờ Việt Nam
+    tz_vietnam = pytz.timezone('Asia/Ho_Chi_Minh')
+    now = datetime.now(tz_vietnam).strftime("%Y-%m-%d %H:%M:%S")
+    
     c.execute('SELECT song_title FROM historytable WHERE username = ? ORDER BY search_time DESC LIMIT 1', (username,))
     last_song = c.fetchone()
     if not last_song or last_song[0] != song_title:
@@ -191,11 +196,11 @@ with st.sidebar:
 # --- GIAO DIỆN KHUNG ĐĂNG NHẬP / ĐĂNG KÝ ---
 if st.session_state['show_auth_form'] and not st.session_state['logged_in']:
     st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; color: #1db954; font-size: 3em;'> Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #1db954; font-size: 3em;'>🎵 Music Recommender</h1>", unsafe_allow_html=True)
     
     col1, col_center, col3 = st.columns([1, 1.2, 1])
     with col_center:
-        tab_login, tab_register = st.tabs(["Đăng nhập", "Đăng ký tài khoản mới"])
+        tab_login, tab_register = st.tabs(["🔐 Đăng nhập", "📝 Đăng ký tài khoản mới"])
         
         with tab_login:
             st.markdown("### Mừng bạn trở lại!")
@@ -235,20 +240,22 @@ if st.session_state['show_auth_form'] and not st.session_state['logged_in']:
                 else:
                     st.warning("Vui lòng điền đầy đủ thông tin.")
 
-# --- GIAO DIỆN TRANG CHỦ MẶC ĐỊNH (Giao diện sạch, ẩn hoàn toàn st.info) ---
+# --- GIAO DIỆN TRANG CHỦ MẶC ĐỊNH ---
 else:
-    st.markdown("<h1 style='text-align: center; color: #ffffff;'>Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #ffffff;'>🎵 Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 30px;'>Course: Recommendation Systems | Instructor: PhD. Nguyen Luong Vuong</p>", unsafe_allow_html=True)
     
     col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
     
     with col_input:
+        st.markdown("<h3 style='color: #ffffff;'>⚙️ Trình điều khiển</h3>", unsafe_allow_html=True)
         song_list = df['track_name'].tolist()
         
         default_index = None
         if st.session_state['search_song_input'] in song_list:
             default_index = song_list.index(st.session_state['search_song_input'])
             
-        selected_song = st.selectbox("🔍 Nhập tên bài hát:", options=song_list)
+        selected_song = st.selectbox("🔍 Nhập tên bài hát:", options=song_list, index=default_index, placeholder="Ví dụ: Shape of You")
         
         if selected_song != st.session_state['search_song_input']:
             st.session_state['search_song_input'] = selected_song
@@ -294,5 +301,4 @@ else:
                             </div>
                         """, unsafe_allow_html=True)
         else:
-            # Rỗng hoàn toàn khi chưa bấm tìm kiếm để tối ưu thẩm mỹ giao diện
             pass
