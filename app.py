@@ -120,7 +120,7 @@ def hybrid_recommend(song_title, df, top_n=4, content_weight=0.7, pop_weight=0.3
     idx = df[df['track_name'] == song_title].index[0]
     
     hybrid_scores = []
-    for i, content_score in enumerate(cosine_sim[idx]): [cite: 25, 39]
+    for i, content_score in enumerate(cosine_sim[idx]):
         if i != idx:
             final_score = (content_weight * content_score) + (pop_weight * normalized_pop.iloc[i]) [cite: 5, 25]
             hybrid_scores.append((i, final_score))
