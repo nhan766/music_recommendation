@@ -249,7 +249,6 @@ else:
 
     # Không gian hiển thị chức năng chính (Bố cục 2 cột)
     st.markdown("<h1 style='text-align: center; color: #ffffff;'>🎵 Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 30px;'>Course: Recommendation Systems | Instructor: PhD. Nguyen Luong Vuong</p>", unsafe_allow_html=True)
     
     col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
     
