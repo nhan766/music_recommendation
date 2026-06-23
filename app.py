@@ -236,5 +236,5 @@ else:
                                 <div class="sim-bar-container"><div class="sim-bar-fill" style="width: {sim_percentage}%;"></div></div>
                             </div>
                         """, unsafe_allow_html=True)
-        else:
-            st.info("Hệ thống giải quyết bài toán Cold-Start bằng cách kết hợp đặc trưng item và độ phổ biến. Hãy gõ tên bài hát để trải nghiệm.")
+    
+
