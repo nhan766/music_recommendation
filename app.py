@@ -274,7 +274,7 @@ else:
             add_search_history(st.session_state['username'], current_search_song)
             
             st.markdown(f"<h3 style='color: #ffffff;'> Gợi ý Top-N cho: {current_search_song}</h3>", unsafe_allow_html=True) [cite: 19, 32]
-            with st.spinner("Đang tính toán ma trận tương tác $R$ và tối ưu Hybrid Score..."): [cite: 22, 25, 39]
+            with st.spinner("Đang tính toán ma trận tương tác $R$ và tối ưu Hybrid Score..."):
                 recommendations = hybrid_recommend(current_search_song, df, top_n=4, content_weight=content_weight, pop_weight=pop_weight) [cite: 5, 19, 28]
                 
                 grid_col1, grid_col2 = st.columns(2)
