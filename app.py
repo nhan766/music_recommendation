@@ -176,12 +176,12 @@ with st.sidebar:
         else:
             st.info("Chưa có lịch sử tìm kiếm.")
     else:
-        st.markdown("### 🔒 Chế độ Khách (Guest Mode)")
+        st.markdown("### Chế độ Khách")
         st.warning("Đăng nhập để mở khóa tính năng lưu lại Lịch sử và tăng độ chính xác của Thuật toán Cá nhân hóa.")
         
         # Nút bật mở form đăng nhập
         if not st.session_state['show_auth_form']:
-            if st.button("🔐 Đăng nhập / Đăng ký", type="primary", use_container_width=True):
+            if st.button("Đăng nhập / Đăng ký", type="primary", use_container_width=True):
                 st.session_state['show_auth_form'] = True
                 st.rerun()
         else:
