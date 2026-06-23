@@ -124,8 +124,7 @@ if 'logged_in' not in st.session_state:
 # --- TRANG ĐĂNG NHẬP / ĐĂNG KÝ ---
 if not st.session_state['logged_in']:
     st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; color: #1db954; font-size: 3em;'>🎵 Music Recommender</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 40px;'>Đăng nhập để khám phá và lưu trữ không gian âm nhạc của riêng bạn.</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #1db954; font-size: 3em;'>Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
     
     col1, col_center, col3 = st.columns([1, 1.2, 1])
     with col_center:
@@ -193,7 +192,7 @@ else:
             st.info("Bạn chưa tìm kiếm bài hát nào.")
 
     # Giao diện chính
-    st.markdown("<h1 style='text-align: center; color: #ffffff;'>🎵 Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #ffffff;'> Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
     
     col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
     
