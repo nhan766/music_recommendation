@@ -242,7 +242,7 @@ if st.session_state['show_auth_form'] and not st.session_state['logged_in']:
 
 # --- GIAO DIỆN TRANG CHỦ MẶC ĐỊNH ---
 else:
-    st.markdown("<h1 style='text-align: center; color: #ffffff;'>🎵 Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #ffffff;'>Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
     
     col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
     
