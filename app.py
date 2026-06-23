@@ -214,7 +214,7 @@ else:
         if search_button and selected_song:
             add_search_history(st.session_state['username'], selected_song)
             
-            st.markdown(f"<h3 style='color: #ffffff;'>✨ Gợi ý Top-N cho: {selected_song}</h3>", unsafe_allow_html=True)
+            st.markdown(f"<h3 style='color: #ffffff;'>Gợi ý Top-N cho: {selected_song}</h3>", unsafe_allow_html=True)
             with st.spinner("Đang tính toán ma trận tương tác $R$ và tối ưu Hybrid Score..."):
                 recommendations = hybrid_recommend(selected_song, df, top_n=4, content_weight=content_weight, pop_weight=pop_weight)
                 
