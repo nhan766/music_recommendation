@@ -226,9 +226,9 @@ else:
                     with target_col:
                         st.markdown(f"""
                             <div class="music-card">
-                                <div class="music-title">🎵 {row['track_name']}</div>
-                                <div class="music-artist">👤 {row['artists']}</div>
-                                <span class="music-badge">🏷️ {row['track_genre'].upper()}</span>
+                                <div class="music-title"> {row['track_name']}</div>
+                                <div class="music-artist"> {row['artists']}</div>
+                                <span class="music-badge"> {row['track_genre'].upper()}</span>
                                 <div style="color: #888; font-size: 11px; margin-top: 12px; display: flex; justify-content: space-between;">
                                     <span>Điểm Hybrid ($s(u,i)$)</span>
                                     <span style="color: #1db954; font-weight: bold;">{sim_percentage}%</span>
