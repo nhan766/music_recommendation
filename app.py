@@ -191,7 +191,7 @@ with st.sidebar:
 # --- GIAO DIỆN KHUNG ĐĂNG NHẬP / ĐĂNG KÝ ---
 if st.session_state['show_auth_form'] and not st.session_state['logged_in']:
     st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; color: #1db954; font-size: 3em;'>🎵 Music Recommender</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #1db954; font-size: 3em;'> Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
     
     col1, col_center, col3 = st.columns([1, 1.2, 1])
     with col_center:
