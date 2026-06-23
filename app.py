@@ -242,7 +242,6 @@ else:
     col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
     
     with col_input:
-        st.markdown("<h3 style='color: #ffffff;'>⚙️ Trình điều khiển</h3>", unsafe_allow_html=True)
         song_list = df['track_name'].tolist()
         
         default_index = None
