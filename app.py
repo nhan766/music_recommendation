@@ -260,7 +260,7 @@ else:
             st.session_state['trigger_search'] = False
         
         st.markdown("<br><p style='color: #b3b3b3; font-size: 14px;'>Điều chỉnh Trọng số Hybrid:</p>", unsafe_allow_html=True)
-        content_weight = st.slider("Tỷ trọng Lọc nội dung (Content-based)", 0.0, 1.0, 0.7)
+        content_weight = st.slider("Tỷ trọng Lọc nội dung", 0.0, 1.0, 0.7)
         pop_weight = 1.0 - content_weight
         st.caption(f"Tỷ trọng Lọc cộng tác/Phổ biến: **{pop_weight:.1f}**")
         
