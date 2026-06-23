@@ -7,8 +7,9 @@ import sqlite3
 import hashlib
 from datetime import datetime
 
+# ==========================================
 # 1. CẤU HÌNH TRANG WEB & GIAO DIỆN CSS
-
+# ==========================================
 st.set_page_config(page_title="Music Recommendation System", page_icon="🎵", layout="wide")
 
 st.markdown("""
@@ -30,8 +31,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ==========================================
 # 2. CƠ SỞ DỮ LIỆU (SQLite)
-
+# ==========================================
 def make_hashes(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
 
@@ -73,8 +75,9 @@ def get_user_history(username):
 
 init_db()
 
+# ==========================================
 # 3. THUẬT TOÁN LOGIC HỆ THỐNG GỢI Ý (Hybrid Model)
-
+# ==========================================
 @st.cache_data
 def load_data():
     try:
@@ -119,8 +122,9 @@ def hybrid_recommend(song_title, df, top_n=4, content_weight=0.7, pop_weight=0.3
         results.append(row)
     return pd.DataFrame(results)
 
+# ==========================================
 # 4. QUẢN LÝ PHIÊN (Session State) & ĐIỀU HƯỚNG UI
-
+# ==========================================
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 if 'search_song_input' not in st.session_state:
@@ -134,7 +138,7 @@ def click_history_callback(song_name):
     st.session_state['search_song_input'] = song_name
     st.session_state['trigger_search'] = True
 
-# --- THANH SIDEBAR (ĐIỀU KHIỂN ĐĂNG NHẬP & LỊCH SỬ) ---
+# --- THANH SIDEBAR ---
 with st.sidebar:
     if st.session_state['logged_in']:
         st.markdown(f"### 👤 Xin chào, **<span style='color:#1db954;'>{st.session_state['username']}</span>**", unsafe_allow_html=True)
@@ -172,12 +176,11 @@ with st.sidebar:
         else:
             st.info("Chưa có lịch sử tìm kiếm.")
     else:
-        st.markdown("### Chế độ Khách")
+        st.markdown("### 🔒 Chế độ Khách (Guest Mode)")
         st.warning("Đăng nhập để mở khóa tính năng lưu lại Lịch sử và tăng độ chính xác của Thuật toán Cá nhân hóa.")
         
-        # Nút bật mở form đăng nhập
         if not st.session_state['show_auth_form']:
-            if st.button("Đăng nhập / Đăng ký", type="primary", use_container_width=True):
+            if st.button("🔐 Đăng nhập / Đăng ký", type="primary", use_container_width=True):
                 st.session_state['show_auth_form'] = True
                 st.rerun()
         else:
@@ -185,14 +188,14 @@ with st.sidebar:
                 st.session_state['show_auth_form'] = False
                 st.rerun()
 
-# --- GIAO DIỆN CHÍNH (NẾU BẤM NÚT ĐĂNG NHẬP THÌ HIỂN THỊ KHUNG AUTH ĐÈ LÊN) ---
+# --- GIAO DIỆN KHUNG ĐĂNG NHẬP / ĐĂNG KÝ ---
 if st.session_state['show_auth_form'] and not st.session_state['logged_in']:
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("<h1 style='text-align: center; color: #1db954; font-size: 3em;'>🎵 Music Recommender</h1>", unsafe_allow_html=True)
     
     col1, col_center, col3 = st.columns([1, 1.2, 1])
     with col_center:
-        tab_login, tab_register = st.tabs([" Đăng nhập", " Đăng ký tài khoản mới"])
+        tab_login, tab_register = st.tabs(["🔐 Đăng nhập", "📝 Đăng ký tài khoản mới"])
         
         with tab_login:
             st.markdown("### Mừng bạn trở lại!")
@@ -206,7 +209,7 @@ if st.session_state['show_auth_form'] and not st.session_state['logged_in']:
                     if result:
                         st.session_state['logged_in'] = True
                         st.session_state['username'] = username
-                        st.session_state['show_auth_form'] = False  # Đóng form để vào trang chủ
+                        st.session_state['show_auth_form'] = False
                         st.success("Đăng nhập thành công!")
                         st.rerun() 
                     else:
@@ -232,14 +235,15 @@ if st.session_state['show_auth_form'] and not st.session_state['logged_in']:
                 else:
                     st.warning("Vui lòng điền đầy đủ thông tin.")
 
-# --- GIAO DIỆN TRANG CHỦ MẶC ĐỊNH ---
+# --- GIAO DIỆN TRANG CHỦ MẶC ĐỊNH (Giao diện sạch, ẩn hoàn toàn st.info) ---
 else:
     st.markdown("<h1 style='text-align: center; color: #ffffff;'>🎵 Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 30px;'>Course: Recommendation Systems | Instructor: PhD. Nguyen Luong Vuong</p>", unsafe_allow_html=True)
     
     col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
     
     with col_input:
-        
+        st.markdown("<h3 style='color: #ffffff;'>⚙️ Trình điều khiển</h3>", unsafe_allow_html=True)
         song_list = df['track_name'].tolist()
         
         default_index = None
@@ -266,7 +270,6 @@ else:
         if st.session_state['trigger_search'] and st.session_state['search_song_input']:
             current_search_song = st.session_state['search_song_input']
             
-            # CHỈ LƯU LỊCH SỬ NẾU ĐÃ ĐĂNG NHẬP
             if st.session_state['logged_in']:
                 add_search_history(st.session_state['username'], current_search_song)
             
@@ -293,4 +296,5 @@ else:
                             </div>
                         """, unsafe_allow_html=True)
         else:
-            st.info("Hệ thống đang chạy ở Chế độ Khách. Hãy gõ tên bài hát ở bảng điều khiển bên trái để trải nghiệm thuật toán.")
+            # Rỗng hoàn toàn khi chưa bấm tìm kiếm để tối ưu thẩm mỹ giao diện
+            pass
