@@ -207,7 +207,7 @@ else:
 
     # Giao diện Hệ thống chính
     st.markdown("<h1 style='text-align: center; color: #ffffff;'>🎵 Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #b3b3b3;'>Course: Recommendation Systems | Instructor: PhD. Nguyen Luong Vuong</p>", unsafe_allow_html=True)
+    
     
     tab1, tab2 = st.tabs(["🎧 Khám phá Âm nhạc", "📊 Đánh giá Mô hình"])
 
