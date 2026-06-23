@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import sqlite3
 import hashlib
 from datetime import datetime
-import pytz  # Thư viện xử lý cấu hình múi giờ quốc tế
+import pytz 
 
 # ==========================================
 # 1. CẤU HÌNH TRANG WEB & GIAO DIỆN CSS
