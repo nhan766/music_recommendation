@@ -7,9 +7,8 @@ import sqlite3
 import hashlib
 from datetime import datetime
 
-# ==========================================
-# 1. CẤU HÌNH TRANG WEB & CSS TÙY BIẾN GIAO DIỆN
-# ==========================================
+# 1. CẤU HÌNH TRANG WEB & CSS 
+
 st.set_page_config(page_title="Music Recommendation System", page_icon="🎵", layout="wide")
 
 st.markdown("""
@@ -31,9 +30,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ==========================================
 # 2. HỆ QUẢN TRỊ CƠ SỞ DỮ LIỆU (SQLite)
-# ==========================================
+
 def make_hashes(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
 
@@ -76,9 +74,8 @@ def get_user_history(username):
 
 init_db()
 
-# ==========================================
 # 3. THUẬT TOÁN LOGIC HỆ THỐNG GỢI Ý (Hybrid Model)
-# ==========================================
+
 @st.cache_data
 def load_data():
     try:
@@ -129,9 +126,9 @@ def hybrid_recommend(song_title, df, top_n=4, content_weight=0.7, pop_weight=0.3
         results.append(row)
     return pd.DataFrame(results)
 
-# ==========================================
+
 # 4. QUẢN LÝ PHIÊN (Session State) & ĐIỀU HƯỚNG UI
-# ==========================================
+
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 if 'search_song_input' not in st.session_state:
@@ -187,9 +184,9 @@ if not st.session_state['logged_in']:
                 else:
                     st.warning("Vui lòng điền đầy đủ thông tin.")
 
-# --- TRANG CHỦ: HỆ THỐNG GỢI Ý ÂM NHẠC CHÍNH ---
+# --- TRANG CHỦ ---
 else:
-    # Hàm xử lý bắt sự kiện (Event Callback) khi ấn vào mục lịch sử bên Sidebar
+    # Hàm xử lý bắt sự kiện khi ấn vào mục lịch sử bên Sidebar
     def click_history_callback(song_name):
         st.session_state['search_song_input'] = song_name
         st.session_state['trigger_search'] = True
