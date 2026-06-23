@@ -110,7 +110,7 @@ def load_data():
 
 df = load_data()
 
-def hybrid_recommend(song_title, df, top_n=4, content_weight=0.7, pop_weight=0.3): [cite: 5, 28]
+def hybrid_recommend(song_title, df, top_n=4, content_weight=0.7, pop_weight=0.3):
     df['Features'] = df['track_genre'] + " " + df['artists'] [cite: 5, 18, 24]
     tfidf = TfidfVectorizer(stop_words='english')
     tfidf_matrix = tfidf.fit_transform(df['Features'])
