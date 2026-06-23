@@ -238,7 +238,6 @@ if st.session_state['show_auth_form'] and not st.session_state['logged_in']:
 # --- GIAO DIỆN TRANG CHỦ MẶC ĐỊNH (Giao diện sạch, ẩn hoàn toàn st.info) ---
 else:
     st.markdown("<h1 style='text-align: center; color: #ffffff;'>🎵 Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 30px;'>Course: Recommendation Systems | Instructor: PhD. Nguyen Luong Vuong</p>", unsafe_allow_html=True)
     
     col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
     
