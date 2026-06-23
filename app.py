@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import matplotlib.pyplot as plt
 import sqlite3
 import hashlib
 from datetime import datetime
@@ -28,14 +27,12 @@ st.markdown("""
 # ==========================================
 # 2. HỆ QUẢN TRỊ CƠ SỞ DỮ LIỆU (SQLite)
 # ==========================================
-# Hàm băm mật khẩu để bảo mật
 def make_hashes(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
 
 def check_hashes(password, hashed_text):
     return make_hashes(password) == hashed_text
 
-# Khởi tạo Database và các Bảng
 def init_db():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -44,7 +41,6 @@ def init_db():
     conn.commit()
     return conn
 
-# Các hàm thao tác dữ liệu
 def add_user(username, password):
     conn = init_db()
     c = conn.cursor()
@@ -70,10 +66,10 @@ def get_user_history(username):
     c.execute('SELECT song_title, search_time FROM historytable WHERE username = ? ORDER BY search_time DESC LIMIT 10', (username,))
     return c.fetchall()
 
-init_db() # Gọi hàm để tạo file DB ngay khi chạy app
+init_db()
 
 # ==========================================
-# 3. LOGIC HỆ THỐNG GỢI Ý (Giữ nguyên)
+# 3. LOGIC HỆ THỐNG GỢI Ý
 # ==========================================
 @st.cache_data
 def load_data():
@@ -96,7 +92,7 @@ def load_data():
 
 df = load_data()
 
-def hybrid_recommend(song_title, df, top_n=4, _weight=0.7, pop_weight=0.3):
+def hybrid_recommend(song_title, df, top_n=4, content_weight=0.7, pop_weight=0.3):
     df['Features'] = df['track_genre'] + " " + df['artists']
     tfidf = TfidfVectorizer(stop_words='english')
     tfidf_matrix = tfidf.fit_transform(df['Features'])
@@ -106,9 +102,9 @@ def hybrid_recommend(song_title, df, top_n=4, _weight=0.7, pop_weight=0.3):
     idx = df[df['track_name'] == song_title].index[0]
     
     hybrid_scores = []
-    for i, _score in enumerate(cosine_sim[idx]):
+    for i, content_score in enumerate(cosine_sim[idx]):
         if i != idx:
-            final_score = (_weight * _score) + (pop_weight * normalized_pop.iloc[i])
+            final_score = (content_weight * content_score) + (pop_weight * normalized_pop.iloc[i])
             hybrid_scores.append((i, final_score))
             
     hybrid_scores = sorted(hybrid_scores, key=lambda x: x[1], reverse=True)[:top_n]
@@ -120,24 +116,19 @@ def hybrid_recommend(song_title, df, top_n=4, _weight=0.7, pop_weight=0.3):
     return pd.DataFrame(results)
 
 # ==========================================
-# 4. QUẢN LÝ PHIÊN (Session State) & GIAO DIỆN
+# 4. GIAO DIỆN HỆ THỐNG CHÍNH
 # ==========================================
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 
-# ---------------------------------------------------------
-# GIAO DIỆN KHI CHƯA ĐĂNG NHẬP (TRANG AUTHENTICATION)
-# ---------------------------------------------------------
+# --- TRANG ĐĂNG NHẬP / ĐĂNG KÝ ---
 if not st.session_state['logged_in']:
-    st.markdown("<br><br>", unsafe_allow_html=True) # Tạo khoảng trống phía trên
+    st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("<h1 style='text-align: center; color: #1db954; font-size: 3em;'>🎵 Music Recommender</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #b3b3b3; margin-bottom: 40px;'>Đăng nhập để khám phá và lưu trữ không gian âm nhạc của riêng bạn.</p>", unsafe_allow_html=True)
     
-    # Kỹ thuật chia 3 cột để ép khung Đăng nhập vào giữa (Tỷ lệ: 1 - 1.2 - 1)
     col1, col_center, col3 = st.columns([1, 1.2, 1])
-    
     with col_center:
-        # Bọc giao diện trong một thẻ Tab hiện đại thay vì Selectbox
         tab_login, tab_register = st.tabs(["🔐 Đăng nhập", "📝 Đăng ký tài khoản mới"])
         
         with tab_login:
@@ -146,7 +137,6 @@ if not st.session_state['logged_in']:
             password = st.text_input("Mật khẩu", placeholder="Nhập mật khẩu...", type='password', key="login_pass")
             
             st.markdown("<br>", unsafe_allow_html=True)
-            # Nút bấm tràn viền (use_container_width=True) và set màu chính (type="primary")
             if st.button("Đăng nhập ngay", type="primary", use_container_width=True):
                 if username and password:
                     hashed_pswd = make_hashes(password)
@@ -168,7 +158,6 @@ if not st.session_state['logged_in']:
             st.markdown("<br>", unsafe_allow_html=True)
             if st.button("Tạo tài khoản", use_container_width=True):
                 if new_user and new_password:
-                    # Kiểm tra xem user đã tồn tại chưa (logic nâng cao)
                     conn = init_db()
                     c = conn.cursor()
                     c.execute('SELECT * FROM userstable WHERE username = ?', (new_user,))
@@ -180,11 +169,9 @@ if not st.session_state['logged_in']:
                 else:
                     st.warning("Vui lòng điền đầy đủ thông tin.")
 
-# ---------------------------------------------------------
-# GIAO DIỆN KHI ĐÃ ĐĂNG NHẬP (TRANG CHỦ HỆ THỐNG)
-# ---------------------------------------------------------
+# --- TRANG CHỦ HỆ THỐNG GỢI Ý ---
 else:
-    # Sidebar quản lý tài khoản và Lịch sử
+    # Sidebar
     with st.sidebar:
         st.markdown(f"### 👤 Xin chào, **<span style='color:#1db954;'>{st.session_state['username']}</span>**", unsafe_allow_html=True)
         if st.button("🚪 Đăng xuất", use_container_width=True):
@@ -205,85 +192,49 @@ else:
         else:
             st.info("Bạn chưa tìm kiếm bài hát nào.")
 
-    # Giao diện Hệ thống chính
+    # Giao diện chính
     st.markdown("<h1 style='text-align: center; color: #ffffff;'>🎵 Hybrid Music Recommendation System</h1>", unsafe_allow_html=True)
     
+    col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
     
-    tab1, tab2 = st.tabs(["🎧 Khám phá Âm nhạc", "📊 Đánh giá Mô hình"])
+    with col_input:
+        st.markdown("<h3 style='color: #ffffff;'>⚙️ Trình điều khiển</h3>", unsafe_allow_html=True)
+        song_list = df['track_name'].tolist()
+        selected_song = st.selectbox("🔍 Nhập tên bài hát:", options=song_list, index=None, placeholder="Ví dụ: Shape of You")
+        
+        st.markdown("<br><p style='color: #b3b3b3; font-size: 14px;'>Điều chỉnh Trọng số Hybrid:</p>", unsafe_allow_html=True)
+        content_weight = st.slider("Tỷ trọng Lọc nội dung (Content-based)", 0.0, 1.0, 0.7)
+        pop_weight = 1.0 - content_weight
+        st.caption(f"Tỷ trọng Lọc cộng tác/Phổ biến: **{pop_weight:.1f}**")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        search_button = st.button("Phân tích & Gợi ý", type="primary", use_container_width=True, disabled=(selected_song is None))
 
-    with tab1:
-        col_input, col_spacer, col_output = st.columns([1.5, 0.2, 3])
-        with col_input:
-            st.markdown("<h3 style='color: #ffffff;'>⚙️ Trình điều khiển</h3>", unsafe_allow_html=True)
-            song_list = df['track_name'].tolist()
-            selected_song = st.selectbox("🔍 Nhập tên bài hát:", options=song_list, index=None, placeholder="Ví dụ: Shape of You")
+    with col_output:
+        if search_button and selected_song:
+            add_search_history(st.session_state['username'], selected_song)
             
-            st.markdown("<br><p style='color: #b3b3b3; font-size: 14px;'>Điều chỉnh Trọng số Hybrid:</p>", unsafe_allow_html=True)
-            content_weight = st.slider("Tỷ trọng Lọc nội dung", 0.0, 1.0, 0.7)
-            pop_weight = 1.0 - content_weight
-            st.caption(f"Tỷ trọng Lọc cộng tác/Phổ biến: **{pop_weight:.1f}**")
-            
-            st.markdown("<br>", unsafe_allow_html=True)
-            search_button = st.button("Phân tích & Gợi ý", type="primary", use_container_width=True, disabled=(selected_song is None))
-
-        with col_output:
-            if search_button and selected_song:
-                # Ghi lịch sử vào Database
-                add_search_history(st.session_state['username'], selected_song)
+            st.markdown(f"<h3 style='color: #ffffff;'>✨ Gợi ý Top-N cho: {selected_song}</h3>", unsafe_allow_html=True)
+            with st.spinner("Đang tính toán ma trận tương tác $R$ và tối ưu Hybrid Score..."):
+                recommendations = hybrid_recommend(selected_song, df, top_n=4, content_weight=content_weight, pop_weight=pop_weight)
                 
-                st.markdown(f"<h3 style='color: #ffffff;'>✨ Gợi ý Top-N cho: {selected_song}</h3>", unsafe_allow_html=True)
-                with st.spinner("Đang tính toán ma trận tương tác $R$ và tối ưu Hybrid Score..."):
-                    recommendations = hybrid_recommend(selected_song, df, top_n=4, content_weight=content_weight, pop_weight=pop_weight)
+                grid_col1, grid_col2 = st.columns(2)
+                for index, row in recommendations.iterrows():
+                    target_col = grid_col1 if index % 2 == 0 else grid_col2
+                    sim_percentage = min(int(row['hybrid_score'] * 100), 100) 
                     
-                    grid_col1, grid_col2 = st.columns(2)
-                    for index, row in recommendations.iterrows():
-                        target_col = grid_col1 if index % 2 == 0 else grid_col2
-                        sim_percentage = min(int(row['hybrid_score'] * 100), 100) 
-                        
-                        with target_col:
-                            st.markdown(f"""
-                                <div class="music-card">
-                                    <div class="music-title">🎵 {row['track_name']}</div>
-                                    <div class="music-artist">👤 {row['artists']}</div>
-                                    <span class="music-badge">🏷️ {row['track_genre'].upper()}</span>
-                                    <div style="color: #888; font-size: 11px; margin-top: 12px; display: flex; justify-content: space-between;">
-                                        <span>Điểm Hybrid ($s(u,i)$)</span>
-                                        <span style="color: #1db954; font-weight: bold;">{sim_percentage}%</span>
-                                    </div>
-                                    <div class="sim-bar-container"><div class="sim-bar-fill" style="width: {sim_percentage}%;"></div></div>
+                    with target_col:
+                        st.markdown(f"""
+                            <div class="music-card">
+                                <div class="music-title">🎵 {row['track_name']}</div>
+                                <div class="music-artist">👤 {row['artists']}</div>
+                                <span class="music-badge">🏷️ {row['track_genre'].upper()}</span>
+                                <div style="color: #888; font-size: 11px; margin-top: 12px; display: flex; justify-content: space-between;">
+                                    <span>Điểm Hybrid ($s(u,i)$)</span>
+                                    <span style="color: #1db954; font-weight: bold;">{sim_percentage}%</span>
                                 </div>
-                            """, unsafe_allow_html=True)
-            else:
-                st.info("Hệ thống giải quyết bài toán Cold-Start bằng cách kết hợp đặc trưng item và độ phổ biến. Hãy chọn bài hát để trải nghiệm.")
-
-    with tab2:
-        st.markdown("<h3 style='color: #ffffff;'>📈 Hybrid Model Lift Across Top-K Metrics</h3>", unsafe_allow_html=True)
-        st.markdown("So sánh hiệu suất giữa phương pháp Gợi ý theo độ phổ biến (Popularity Baseline) và Mô hình Lai (Hybrid Model).", unsafe_allow_html=True)
-        
-        fig, ax = plt.subplots(figsize=(10, 5))
-        fig.patch.set_facecolor('#0e1117')
-        ax.set_facecolor('#0e1117')
-        labels = ['Precision@10', 'Recall@10', 'NDCG@10']
-        baseline_scores = [0.12, 0.18, 0.21]
-        hybrid_scores = [0.41, 0.56, 0.63]
-        x = np.arange(len(labels))
-        width = 0.35
-        rects1 = ax.bar(x - width/2, baseline_scores, width, label='Popularity Baseline', color='#2b2b2b')
-        rects2 = ax.bar(x + width/2, hybrid_scores, width, label='Hybrid Model (NTHN)', color='#c06a45')
-        ax.set_ylabel('Scores', color='white')
-        ax.set_xticks(x)
-        ax.set_xticklabels(labels, color='white')
-        ax.tick_params(axis='y', colors='white')
-        ax.legend(facecolor='#1e222b', labelcolor='white', edgecolor='#2d3139')
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.spines['bottom'].set_color('#555555')
-        ax.spines['left'].set_color('#555555')
-        st.pyplot(fig)
-        
-        st.markdown("""
-        **Kết luận Đánh giá:**
-        - **Data Quality is Everything:** Dữ liệu đã được tiền xử lý loại bỏ nhiễu.
-        - **The Perfect Hybrid Balance:** Mô hình lai cho thấy sự vượt trội ở cả 3 chỉ số đo lường.
-        - **User Experience Matters:** Giao diện trực quan hóa giúp người dùng dễ dàng khám phá bài hát mới.
-        """)
+                                <div class="sim-bar-container"><div class="sim-bar-fill" style="width: {sim_percentage}%;"></div></div>
+                            </div>
+                        """, unsafe_allow_html=True)
+        else:
+            st.info("Hệ thống giải quyết bài toán Cold-Start bằng cách kết hợp đặc trưng item và độ phổ biến. Hãy gõ tên bài hát để trải nghiệm.")
