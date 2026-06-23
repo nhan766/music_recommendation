@@ -195,7 +195,7 @@ if st.session_state['show_auth_form'] and not st.session_state['logged_in']:
     
     col1, col_center, col3 = st.columns([1, 1.2, 1])
     with col_center:
-        tab_login, tab_register = st.tabs(["🔐 Đăng nhập", "📝 Đăng ký tài khoản mới"])
+        tab_login, tab_register = st.tabs(["Đăng nhập", "Đăng ký tài khoản mới"])
         
         with tab_login:
             st.markdown("### Mừng bạn trở lại!")
@@ -249,7 +249,7 @@ else:
         if st.session_state['search_song_input'] in song_list:
             default_index = song_list.index(st.session_state['search_song_input'])
             
-        selected_song = st.selectbox("🔍 Nhập tên bài hát:", options=song_list, index=default_index, placeholder="Ví dụ: Shape of You")
+        selected_song = st.selectbox("🔍 Nhập tên bài hát:", options=song_list)
         
         if selected_song != st.session_state['search_song_input']:
             st.session_state['search_song_input'] = selected_song
