@@ -96,7 +96,7 @@ def load_data():
 
 df = load_data()
 
-def hybrid_recommend(song_title, df, top_n=4, content_weight=0.7, pop_weight=0.3):
+def hybrid_recommend(song_title, df, top_n=4, _weight=0.7, pop_weight=0.3):
     df['Features'] = df['track_genre'] + " " + df['artists']
     tfidf = TfidfVectorizer(stop_words='english')
     tfidf_matrix = tfidf.fit_transform(df['Features'])
@@ -106,9 +106,9 @@ def hybrid_recommend(song_title, df, top_n=4, content_weight=0.7, pop_weight=0.3
     idx = df[df['track_name'] == song_title].index[0]
     
     hybrid_scores = []
-    for i, content_score in enumerate(cosine_sim[idx]):
+    for i, _score in enumerate(cosine_sim[idx]):
         if i != idx:
-            final_score = (content_weight * content_score) + (pop_weight * normalized_pop.iloc[i])
+            final_score = (_weight * _score) + (pop_weight * normalized_pop.iloc[i])
             hybrid_scores.append((i, final_score))
             
     hybrid_scores = sorted(hybrid_scores, key=lambda x: x[1], reverse=True)[:top_n]
@@ -219,7 +219,7 @@ else:
             selected_song = st.selectbox("🔍 Nhập tên bài hát:", options=song_list, index=None, placeholder="Ví dụ: Shape of You")
             
             st.markdown("<br><p style='color: #b3b3b3; font-size: 14px;'>Điều chỉnh Trọng số Hybrid:</p>", unsafe_allow_html=True)
-            content_weight = st.slider("Tỷ trọng Lọc nội dung (Content-based)", 0.0, 1.0, 0.7)
+            content_weight = st.slider("Tỷ trọng Lọc nội dung", 0.0, 1.0, 0.7)
             pop_weight = 1.0 - content_weight
             st.caption(f"Tỷ trọng Lọc cộng tác/Phổ biến: **{pop_weight:.1f}**")
             
